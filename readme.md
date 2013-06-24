@@ -1,6 +1,6 @@
 Mysql only.
 
-## As context manager
+#### As context manager
 
     from dblock import database_wide_lock as lock
 
@@ -8,7 +8,7 @@ Mysql only.
         if acquired:
             City.objects.all().rebuild_profiles_count()
 
-## As decorator
+#### As decorator
 
     @lock('rebuild_city_profiles_count')
     def rebuild_city_profiles_count(acquired):
@@ -16,14 +16,14 @@ Mysql only.
         if acquired:
             City.objects.all().rebuild_profiles_count()
 
-## Skipping if already acquired
+#### Skipping if already acquired
 
     # skip if could not acquire lock (by default is false)
     with lock('rebuild_city_profiles_count', is_skip_if_could_not_acquire=True):
         # this section will be skiped if 'rebuild_city_profiles_count' is already acquired by another thread
         City.objects.all().rebuild_profiles_count()
 
-# Django management command mixin
+#### Django management command mixin
 You can use dblock with django management command. Just create mixin like this
     
     # /common_app/utils.py
@@ -45,7 +45,7 @@ You can use dblock with django management command. Just create mixin like this
                     if acquired:
                         return super(LockCommandMixin, self).handle(*args, **kwargs)
 
-And now you can reimplement syncdb --migrate command:
+And now you can reimplement "syncdb --migrate" command:
     
     # /app/management/commands/syncdb_with_lock.py
     from south.management.commands.syncdb import Command as BaseCommand
@@ -58,10 +58,10 @@ And now you can reimplement syncdb --migrate command:
 Running "./manage.py syncdb_with_lock --migrate" same time in different threads will prevent migrating database by locking this proccess only for one thread.
 
 
-## Todo: setup.py
+#### Todo: setup.py
 
-## Todo: tests. How to run tests using vagrant
+#### Todo: tests. How to run tests using vagrant
 
-$ cd dblock/
-$ va up
-$ ./tests/runtests.sh
+    $ cd dblock/
+    $ va up
+    $ ./tests/runtests.sh
