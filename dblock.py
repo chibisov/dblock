@@ -2,7 +2,7 @@
 from functools import wraps
 
 
-class database_wide_lock(object):
+class lock_by_key(object):
     """Only one lock per connection
 
     If you have a lock obtained with GET_LOCK(),

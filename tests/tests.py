@@ -5,7 +5,7 @@ import time
 import unittest
 import MySQLdb
 
-from dblock.core.dblock import database_wide_lock
+from dblock.core.dblock import lock_by_key
 
 
 class TestCore(unittest.TestCase):
@@ -28,7 +28,7 @@ class TestCore(unittest.TestCase):
         self.assertNotEquals(self.get_connection(), self.connection)
 
     def test_acquired__decorator(self):
-        @database_wide_lock('test_1', self.get_connection())
+        @lock_by_key('test_1', self.get_connection())
         def some_func(name, acquired):
             return name, acquired
 
@@ -41,7 +41,7 @@ class TestCore(unittest.TestCase):
 
     def test_acquired__decorator__is_skip_if_could_not_acquire(self):
         is_func_called = []
-        @database_wide_lock('test_2', self.get_connection(), is_skip_if_could_not_acquire=True)
+        @lock_by_key('test_2', self.get_connection(), is_skip_if_could_not_acquire=True)
         def some_func(name, acquired):
             is_func_called.append(True)
             return name, acquired
@@ -58,13 +58,13 @@ class TestCore(unittest.TestCase):
     def test_acquired__context(self):
         cursor = self.get_connection().cursor()
         cursor.execute("SELECT GET_LOCK('test_3', 0)")
-        with database_wide_lock('test_3', self.get_connection()) as acquired:
+        with lock_by_key('test_3', self.get_connection()) as acquired:
             self.assertFalse(acquired)
 
         cursor.execute("SELECT RELEASE_LOCK('test_3')")
-        with database_wide_lock('test_3', self.get_connection()) as acquired:
+        with lock_by_key('test_3', self.get_connection()) as acquired:
             self.assertTrue(acquired)
 
     # def test_change_name(self):
-        # @database_wide_lock('test_threads', self.get_connection())
+        # @lock_by_key('test_threads', self.get_connection())
         # def some_func(name, acquired):

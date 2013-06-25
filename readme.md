@@ -2,7 +2,7 @@ Mysql only.
 
 #### As context manager
 
-    from dblock import database_wide_lock as lock
+    from dblock import lock_by_key as lock
 
     with lock(connection, 'rebuild_city_profiles_count') as acquired:
         if acquired:
@@ -37,7 +37,7 @@ You can use dblock with django management command. Just create mixin like this
             if settings.IS_TEST:
                 return super(LockCommandMixin, self).handle(*args, **kwargs)
             else:
-                with database_wide_lock(
+                with lock_by_key(
                     lock_name=self.lock_name,
                     connection=connections['default'],
                 ) as acquired:
