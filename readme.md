@@ -30,6 +30,7 @@ You can use dblock with django management command. Just create mixin like this
     import time
     from django.db import connections
     from django.conf import settings
+    from dblock import lock_by_key as lock
 
 
     class LockCommandMixin(object):
